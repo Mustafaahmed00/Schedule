@@ -4,11 +4,16 @@ A web-based schedule tracker application designed to help users manage their dai
 
 ## Features
 
-*   **Daily Activity Scheduling**: Add activities with specific start and end times.
-*   **Interactive Timeline**: Visualize and manage daily activities on a drag-and-drop timeline interface.
-*   **Activity Details**: Include notes for each activity.
+*   **Daily Activity Scheduling**: Add activities with specific start and end times, dates, notes, and categories.
+*   **Interactive Timeline**: 
+    *   Visualize and manage daily activities (for the current day) on a drag-and-drop timeline interface.
+    *   Resizable activity blocks to intuitively adjust duration.
+    *   Visual indicator for the current time.
+*   **Activity Categorization**: Assign categories to activities (e.g., Work, Fitness) with corresponding color-coding on the timeline and weekly view.
 *   **Task Management**: Mark activities as complete or delete them.
+*   **Weekly Calendar View**: View activities semaine by semaine with navigation to previous/next weeks.
 *   **Goal Setting**: Define and track weekly and monthly goals.
+*   **Progress Statistics**: View a summary of daily completed activities.
 *   **Data Persistence**: All activities and goals are saved in the browser's local storage, so your data persists between sessions.
 *   **Personalization**: Enter your name for a personalized welcome message.
 *   **Motivational Quotes**: Displays a new motivational quote from Andrew Tate on each page load.
@@ -27,15 +32,16 @@ A web-based schedule tracker application designed to help users manage their dai
 
 ## How to Use
 
-*   **Add Activities**: Use the "Add New Activity" form to input your task, start time, end time, and any notes. Click "Add Activity".
-*   **Manage Daily Schedule**: View your activities on the timeline. Drag and drop activities to reschedule them. Mark activities as "Done" or "Delete" them using the buttons on each activity block.
-*   **Set Goals**: Use the "Weekly Goals" and "Monthly Goals" sections to add and manage your objectives.
-*   **Personalize**: Enter your name in the header field and click "Save Name" for a personalized experience.
+*   **Add Activities**: Use the "Add New Activity" form to input your task, start/end times, notes, and category. Activities are automatically assigned to the current date.
+*   **Manage Daily Schedule**: View today's activities on the timeline. Drag and drop activities to reschedule them. Resize blocks by dragging their top/bottom edges. Mark activities as "Done" or "Delete" them.
+*   **Weekly Overview**: Use the "Weekly Overview" section to see your schedule for different weeks.
+*   **Set Goals**: Use the "Weekly Goals" and "Monthly Goals" sections.
+*   **Personalize**: Enter your name in the header.
 
 ## Future Enhancements
 
-*   Visual indicator for the current time on the timeline.
-*   Ability to resize activity blocks to change duration.
-*   Weekly calendar view.
-*   Advanced settings for user preferences (e.g., themes, data management).
+*   Filtering timeline/weekly view by category.
+*   More granular timeline visuals (e.g., 30-minute markers).
+*   Repeating/Recurring tasks functionality.
+*   Dedicated settings area (manage name, clear all data, theme options).
 *   Activity connection/flow visualization. 

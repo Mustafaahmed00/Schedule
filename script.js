@@ -17,6 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const userNameInput = document.getElementById('user-name-input');
     const saveNameBtn = document.getElementById('save-name-btn');
     const welcomeMessageElement = document.getElementById('welcome-message');
+    let currentTimeIndicator = null; // Variable to hold the time indicator element
+
+    // Weekly Calendar View Elements
+    const weeklyCalendarGrid = document.getElementById('weekly-grid-container');
+    const currentWeekDisplay = document.getElementById('current-week-display');
+    const prevWeekBtn = document.getElementById('prev-week-btn');
+    const nextWeekBtn = document.getElementById('next-week-btn');
+    let currentWeekStartDate = getStartOfWeek(new Date());
+
+    const activityCategorySelect = document.getElementById('activity-category');
+    const dailyStatsContainer = document.getElementById('daily-stats');
+
+    // Define categories
+    const activityCategories = {
+        none: { name: 'None', color: '#ff7043' }, // Default/original color
+        work: { name: 'Work', color: '#42A5F5' }, // Blue
+        personal: { name: 'Personal', color: '#66BB6A' }, // Green
+        fitness: { name: 'Fitness', color: '#FFCA28' }, // Amber
+        learning: { name: 'Learning', color: '#AB47BC' }, // Purple
+        errands: { name: 'Errands', color: '#EF5350' } // Red
+    };
 
     // Andrew Tate Quotes
     const tateQuotes = [
@@ -45,6 +66,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load data from local storage on startup
     loadData();
 
+    // Populate Category Dropdown
+    function populateCategoryDropdown() {
+        if (!activityCategorySelect) return;
+        for (const key in activityCategories) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.textContent = activityCategories[key].name;
+            activityCategorySelect.appendChild(option);
+        }
+    }
+
     if (activityForm) {
         activityForm.addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent default form submission
@@ -54,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const startTime = document.getElementById('start-time').value;
             const endTime = document.getElementById('end-time').value;
             const notes = document.getElementById('notes').value;
+            const category = activityCategorySelect ? activityCategorySelect.value : 'none'; // Get category
 
             // Basic validation (can be expanded)
             if (!activityName || !startTime || !endTime) {
@@ -64,9 +97,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const newActivity = {
                 id: Date.now(), // Unique ID for the activity
                 name: activityName,
+                date: new Date().toISOString().split('T')[0], // Add current date in YYYY-MM-DD format
                 start: startTime,
                 end: endTime,
                 notes: notes,
+                category: category, // Save category
                 done: false // To track if the activity was completed
             };
 
@@ -83,11 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayActivities() {
-        // Clear only the activities, not the whole timeline structure
         const existingActivityElements = timelineContainer.querySelectorAll('.activity-block');
         existingActivityElements.forEach(el => el.remove());
 
-        if (activities.length === 0 && timelineContainer.children.length <= 1) { // Check if only the heading is there or it's empty after slot creation
+        const today = new Date().toISOString().split('T')[0];
+        const todaysActivities = activities.filter(activity => activity.date === today);
+
+        updateDailyStats(todaysActivities); // Call to update stats
+
+        if (todaysActivities.length === 0 && timelineContainer.children.length <= 1) {
             // If timeline slots are already there, we might not want to overwrite them with this message.
             // For now, let's ensure the message appears if no activities and timeline is also empty.
             const noActivityMsg = document.createElement('p');
@@ -103,11 +142,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (noActivityMsg) noActivityMsg.remove();
         }
 
-        activities.forEach(activity => {
+        todaysActivities.forEach(activity => {
             const activityBlock = document.createElement('div');
             activityBlock.classList.add('activity-block');
             activityBlock.dataset.id = activity.id;
             activityBlock.setAttribute('draggable', 'true');
+
+            // Apply category color
+            const categoryColor = activityCategories[activity.category]?.color || activityCategories.none.color;
+            activityBlock.style.backgroundColor = categoryColor;
+            // Adjust border color to be a darker shade of the category color
+            // This is a simple way; a more robust method might involve a color manipulation library
+            const darkerCategoryColor = shadeColor(categoryColor, -20); // Darken by 20%
+            activityBlock.style.borderColor = darkerCategoryColor;
 
             // Calculate position and height
             const hourHeight = 60; // Corresponds to .time-slot min-height in CSS
@@ -131,12 +178,14 @@ document.addEventListener('DOMContentLoaded', () => {
             activityBlock.style.height = `${blockHeight}px`;
 
             activityBlock.innerHTML = `
+                <div class="resize-handle resize-handle-top"></div>
                 <strong>${activity.name}</strong> (${activity.start} - ${activity.end})
                 <p class="notes-preview">${activity.notes ? activity.notes.substring(0, 30) + (activity.notes.length > 30 ? '...' : '') : ''}</p>
                 <div class="activity-actions">
                     <button class="complete-btn" data-id="${activity.id}">${activity.done ? 'Undo' : 'Done'}</button>
                     <button class="delete-btn" data-id="${activity.id}">Delete</button>
                 </div>
+                <div class="resize-handle resize-handle-bottom"></div>
             `;
             if (activity.done) {
                 activityBlock.classList.add('completed');
@@ -193,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return activity;
         });
-        displayActivities(); // Re-render the list
+        displayActivities(); // Re-render the list - this will call updateDailyStats
         saveData(); // Save changes
     }
 
@@ -206,10 +255,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial display (in case there's saved data later)
     loadAndDisplayUserName(); // For personalization
     displayRandomQuote(); // Display a random quote on load
+    populateCategoryDropdown(); // Populate categories
     createTimelineSlots(); // Create the visual timeline structure
+    createCurrentTimeIndicator(); // Create the time indicator line
+    updateCurrentTimeIndicator(); // Position it correctly on load
+    setInterval(updateCurrentTimeIndicator, 60000); // Update every minute
     displayActivities();
     displayWeeklyGoals();
     displayMonthlyGoals();
+    renderWeeklyCalendar(); // Render weekly calendar on load
 
     // We will add more JS functionality later
 
@@ -339,16 +393,137 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Drag and Drop Functions ---
     let draggedActivityId = null;
+    let isResizing = false;
+    let resizeHandleType = null; // 'top' or 'bottom'
+    let resizingActivityId = null;
+    let initialY = 0;
+    let initialHeight = 0;
+    let initialTop = 0;
 
     function addDragAndDropListeners() {
         const activityBlocks = timelineContainer.querySelectorAll('.activity-block');
         activityBlocks.forEach(block => {
             block.addEventListener('dragstart', handleDragStart);
             // block.addEventListener('dragend', handleDragEnd); // Optional: for styling or cleanup
+
+            const topHandle = block.querySelector('.resize-handle-top');
+            const bottomHandle = block.querySelector('.resize-handle-bottom');
+
+            if (topHandle) topHandle.addEventListener('mousedown', handleResizeMouseDown);
+            if (bottomHandle) bottomHandle.addEventListener('mousedown', handleResizeMouseDown);
         });
 
         timelineContainer.addEventListener('dragover', handleDragOver);
         timelineContainer.addEventListener('drop', handleDrop);
+
+        // Global listeners for mousemove and mouseup during resize
+        document.addEventListener('mousemove', handleResizeMouseMove);
+        document.addEventListener('mouseup', handleResizeMouseUp);
+    }
+
+    function handleResizeMouseDown(event) {
+        if (event.button !== 0) return; // Only left click
+        isResizing = true;
+        const block = event.target.closest('.activity-block');
+        resizingActivityId = parseInt(block.dataset.id);
+        resizeHandleType = event.target.classList.contains('resize-handle-top') ? 'top' : 'bottom';
+
+        initialY = event.clientY;
+        initialHeight = block.offsetHeight;
+        initialTop = block.offsetTop;
+
+        // Prevent dragging the whole block when trying to resize
+        block.setAttribute('draggable', 'false');
+        document.body.style.cursor = 'ns-resize'; // Change cursor globally
+        event.preventDefault(); // Prevent text selection or other default actions
+        console.log(`Resize started for ID: ${resizingActivityId}, handle: ${resizeHandleType}`);
+    }
+
+    function handleResizeMouseMove(event) {
+        if (!isResizing || resizingActivityId === null) return;
+
+        const dy = event.clientY - initialY;
+        const block = timelineContainer.querySelector(`.activity-block[data-id="${resizingActivityId}"]`);
+        if (!block) return;
+
+        const hourHeight = 60;
+        const minHeight = hourHeight / 4; // Minimum 15 minutes height
+
+        if (resizeHandleType === 'bottom') {
+            let newHeight = initialHeight + dy;
+            if (newHeight < minHeight) newHeight = minHeight;
+            block.style.height = `${newHeight}px`;
+        } else if (resizeHandleType === 'top') {
+            let newTop = initialTop + dy;
+            let newHeight = initialHeight - dy;
+
+            if (newHeight < minHeight) {
+                newHeight = minHeight;
+                newTop = initialTop + (initialHeight - minHeight); // Adjust top so bottom edge doesn't move
+            }
+            block.style.top = `${newTop}px`;
+            block.style.height = `${newHeight}px`;
+        }
+    }
+
+    function handleResizeMouseUp(event) {
+        if (!isResizing || resizingActivityId === null) return;
+        isResizing = false;
+        document.body.style.cursor = ''; // Reset global cursor
+
+        const block = timelineContainer.querySelector(`.activity-block[data-id="${resizingActivityId}"]`);
+        if (!block) return;
+
+        const activity = activities.find(act => act.id === resizingActivityId);
+        if (!activity) return;
+
+        const hourHeight = 60;
+        const timelineStartHour = 6;
+
+        const newPixelTop = parseFloat(block.style.top);
+        const newPixelHeight = parseFloat(block.style.height);
+
+        // Convert new pixel values back to time
+        let newStartHour = Math.floor(newPixelTop / hourHeight) + timelineStartHour;
+        let newStartMinute = Math.round(((newPixelTop % hourHeight) / hourHeight) * 60 / 15) * 15; // Snap to 15 mins
+        if (newStartMinute >= 60) {
+            newStartHour++;
+            newStartMinute = 0;
+        }
+
+        const durationMinutes = Math.round((newPixelHeight / hourHeight) * 60 / 15) * 15; // Snap duration to 15 mins
+        let newEndHour = newStartHour;
+        let newEndMinute = newStartMinute + durationMinutes;
+
+        // Clamp end time to not exceed timeline boundary (e.g., 22:00 for a 6-22 timeline)
+        // Max minutes from timeline start: (22 - timelineStartHour) * 60
+        const maxTotalMinutes = (22 - timelineStartHour) * 60;
+        let endTotalMinutes = (newEndHour - timelineStartHour) * 60 + newEndMinute;
+
+        if (endTotalMinutes > maxTotalMinutes) {
+            endTotalMinutes = maxTotalMinutes;
+            newEndHour = Math.floor(endTotalMinutes / 60) + timelineStartHour;
+            newEndMinute = endTotalMinutes % 60;
+        }
+
+        // Format as HH:MM
+        const newStartTimeStr = `${String(newStartHour).padStart(2, '0')}:${String(newStartMinute).padStart(2, '0')}`;
+        const newEndTimeStr = `${String(newEndHour).padStart(2, '0')}:${String(newEndMinute).padStart(2, '0')}`;
+
+        // Update activity (ensure date is preserved or set if it was a new drop)
+        activity.date = activity.date || new Date().toISOString().split('T')[0]; // Ensure date exists
+        activity.start = newStartTimeStr;
+        activity.end = newEndTimeStr;
+
+        // Re-enable dragging for the block
+        block.setAttribute('draggable', 'true');
+
+        console.log(`Resize ended for ID: ${resizingActivityId}. New time: ${activity.start} - ${activity.end}`);
+        resizingActivityId = null;
+        resizeHandleType = null;
+
+        displayActivities(); // Re-render all to ensure consistency
+        saveData();
     }
 
     function handleDragStart(event) {
@@ -399,14 +574,23 @@ document.addEventListener('DOMContentLoaded', () => {
         let newEndHour = newStartHour;
         let newEndMinute = newStartMinute + durationMinutes;
 
-        newEndHour += Math.floor(newEndMinute / 60);
-        newEndMinute %= 60;
+        // Clamp end time to not exceed timeline boundary (e.g., 22:00 for a 6-22 timeline)
+        // Max minutes from timeline start: (22 - timelineStartHour) * 60
+        const maxTotalMinutes = (22 - timelineStartHour) * 60;
+        let endTotalMinutes = (newEndHour - timelineStartHour) * 60 + newEndMinute;
+
+        if (endTotalMinutes > maxTotalMinutes) {
+            endTotalMinutes = maxTotalMinutes;
+            newEndHour = Math.floor(endTotalMinutes / 60) + timelineStartHour;
+            newEndMinute = endTotalMinutes % 60;
+        }
 
         // Format as HH:MM
         const newStartTimeStr = `${String(newStartHour).padStart(2, '0')}:${String(newStartMinute).padStart(2, '0')}`;
         const newEndTimeStr = `${String(newEndHour).padStart(2, '0')}:${String(newEndMinute).padStart(2, '0')}`;
 
-        // Update activity
+        // Update activity (ensure date is preserved or set if it was a new drop)
+        activity.date = activity.date || new Date().toISOString().split('T')[0]; // Ensure date exists
         activity.start = newStartTimeStr;
         activity.end = newEndTimeStr;
 
@@ -466,5 +650,145 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Listeners for Personalization
     if (saveNameBtn) {
         saveNameBtn.addEventListener('click', saveUserName);
+    }
+
+    // --- Current Time Indicator Functions ---
+    function createCurrentTimeIndicator() {
+        if (!timelineContainer) return;
+        currentTimeIndicator = document.createElement('div');
+        currentTimeIndicator.id = 'current-time-indicator';
+        timelineContainer.appendChild(currentTimeIndicator);
+        console.log("Current time indicator created.");
+    }
+
+    function updateCurrentTimeIndicator() {
+        if (!currentTimeIndicator || !timelineContainer) return;
+
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        const hourHeight = 60; // Corresponds to .time-slot min-height in CSS
+        const timelineStartHour = 6; // Timeline starts at 6 AM
+
+        // Calculate top position
+        // Only display if current time is within timeline range (6 AM to 10 PM / 22:00)
+        if (currentHour >= timelineStartHour && currentHour < 22) {
+            const topPosition = (currentHour - timelineStartHour + currentMinute / 60) * hourHeight;
+            currentTimeIndicator.style.top = `${topPosition}px`;
+            currentTimeIndicator.style.display = 'block'; // Make sure it's visible
+        } else {
+            currentTimeIndicator.style.display = 'none'; // Hide if outside range
+        }
+        // console.log("Current time indicator updated to:", currentTimeIndicator.style.top);
+    }
+
+    // --- Weekly Calendar Functions ---
+    function getStartOfWeek(date) {
+        const d = new Date(date);
+        const day = d.getDay(); // Sunday - 0, Monday - 1, ..., Saturday - 6
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust to make Monday the first day
+        return new Date(d.setDate(diff));
+    }
+
+    function formatDate(date, includeDayName = false) {
+        const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+        if (includeDayName) {
+            options.weekday = 'short';
+        }
+        return date.toLocaleDateString('en-CA', options); // 'en-CA' gives YYYY-MM-DD like format parts
+    }
+
+    function renderWeeklyCalendar() {
+        if (!weeklyCalendarGrid || !currentWeekDisplay) return;
+
+        weeklyCalendarGrid.innerHTML = ''; // Clear previous week
+        const weekStart = new Date(currentWeekStartDate);
+        currentWeekDisplay.textContent = `Week of ${formatDate(weekStart)}`;
+
+        for (let i = 0; i < 7; i++) {
+            const dayDate = new Date(weekStart);
+            dayDate.setDate(weekStart.getDate() + i);
+            const dayDateString = dayDate.toISOString().split('T')[0];
+
+            const dayCell = document.createElement('div');
+            dayCell.classList.add('week-day-cell');
+            dayCell.dataset.date = dayDateString;
+
+            const dayHeader = document.createElement('h4');
+            dayHeader.textContent = formatDate(dayDate, true); // e.g., "Mon, 2023-10-30"
+            dayCell.appendChild(dayHeader);
+
+            const activitiesForDay = activities.filter(act => act.date === dayDateString);
+            const activitiesList = document.createElement('ul');
+            activitiesForDay.forEach(act => {
+                const actItem = document.createElement('li');
+                actItem.textContent = `${act.start} - ${act.name}`;
+                // Apply category color to weekly view items as well
+                const categoryColor = activityCategories[act.category]?.color || activityCategories.none.color;
+                actItem.style.backgroundColor = categoryColor;
+                // Potentially adjust text color for better contrast if needed on category colors
+                // For now, assuming the dark text on these colors is fine.
+
+                if (act.done) {
+                    actItem.classList.add('completed');
+                }
+                // Optional: Make these clickable to jump to the day on the timeline, or open a modal
+                activitiesList.appendChild(actItem);
+            });
+            dayCell.appendChild(activitiesList);
+            weeklyCalendarGrid.appendChild(dayCell);
+        }
+    }
+
+    function changeWeek(direction) {
+        const newDate = new Date(currentWeekStartDate);
+        newDate.setDate(currentWeekStartDate.getDate() + (direction * 7));
+        currentWeekStartDate = newDate;
+        renderWeeklyCalendar();
+    }
+
+    // Event listeners for weekly calendar navigation
+    if (prevWeekBtn) prevWeekBtn.addEventListener('click', () => changeWeek(-1));
+    if (nextWeekBtn) nextWeekBtn.addEventListener('click', () => changeWeek(1));
+
+    // --- Statistics Functions ---
+    function updateDailyStats(todaysActivitiesArray) {
+        if (!dailyStatsContainer) return;
+
+        const totalToday = todaysActivitiesArray.length;
+        const completedToday = todaysActivitiesArray.filter(act => act.done).length;
+
+        if (totalToday === 0) {
+            dailyStatsContainer.innerHTML = '<p>No activities scheduled for today.</p>';
+        } else {
+            dailyStatsContainer.innerHTML = `<p>Today's Progress: <strong>${completedToday}</strong> / <strong>${totalToday}</strong> activities completed.</p>`;
+        }
+    }
+
+    // --- Helper to darken a hex color ---
+    // (Could be expanded for more color types if needed)
+    function shadeColor(color, percent) {
+        let R = parseInt(color.substring(1, 3), 16);
+        let G = parseInt(color.substring(3, 5), 16);
+        let B = parseInt(color.substring(5, 7), 16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R < 255) ? R : 255;
+        G = (G < 255) ? G : 255;
+        B = (B < 255) ? B : 255;
+
+        R = Math.round(R)
+        G = Math.round(G)
+        B = Math.round(B)
+
+        const RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
+        const GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
+        const BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
+
+        return "#" + RR + GG + BB;
     }
 }); 

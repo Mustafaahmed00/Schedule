@@ -42,11 +42,20 @@
                     <label for="notes">Notes:</label>
                     <textarea id="notes" name="notes" rows="3"></textarea>
                 </div>
+                <div>
+                    <label for="activity-category">Category:</label>
+                    <select id="activity-category" name="activity-category">
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
                 <button type="submit">Add Activity</button>
             </form>
         </section>
         <section id="daily-schedule">
             <h2>Today's Timeline</h2>
+            <div id="daily-stats" class="stats-container">
+                <!-- Daily statistics will be displayed here -->
+            </div>
             <div id="timeline-container">
                 <!-- Time slots and activity blocks will be generated here by JavaScript -->
             </div>
@@ -61,6 +70,17 @@
                 <!-- Weekly goals will be displayed here -->
             </ul>
         </section>
+        <section id="weekly-calendar-view">
+            <h2>Weekly Overview</h2>
+            <div id="weekly-calendar-header">
+                <button id="prev-week-btn">&lt; Prev Week</button>
+                <h3 id="current-week-display">Current Week</h3>
+                <button id="next-week-btn">Next Week &gt;</button>
+            </div>
+            <div id="weekly-grid-container">
+                <!-- Days of the week will be generated here -->
+            </div>
+        </section>
         <section id="monthly-goals">
             <h2>Monthly Goals</h2>
             <div id="monthly-goals-input">
@@ -73,7 +93,7 @@
         </section>
     </main>
     <footer>
-        <p>&copy; 2024 Schedule Tracker</p>
+        <p>&copy; 2025 Schedule Tracker</p>
     </footer>
     <script src="script.js"></script>
 </body>
