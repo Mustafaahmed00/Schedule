@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>My Schedule Tracker</h1>
+        <div id="user-personalization">
+            <input type="text" id="user-name-input" placeholder="Enter your name">
+            <button id="save-name-btn">Save Name</button>
+            <p id="welcome-message"></p>
+        </div>
+    </header>
+    <main>
+        <section id="quote-section">
+            <h2>Quote of the Day</h2>
+            <p id="quote-text">"The man who goes to the gym every single day regardless of how he feels will always beat
+                the man who goes to the gym when he feels like going to the gym." - Andrew Tate</p>
+        </section>
+        <section id="schedule-input">
+            <h2>Add New Activity</h2>
+            <form id="activity-form">
+                <div>
+                    <label for="activity-name">Activity:</label>
+                    <input type="text" id="activity-name" name="activity-name" required>
+                </div>
+                <div>
+                    <label for="start-time">Start Time:</label>
+                    <input type="time" id="start-time" name="start-time" required>
+                </div>
+                <div>
+                    <label for="end-time">End Time:</label>
+                    <input type="time" id="end-time" name="end-time" required>
+                </div>
+                <div>
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" name="notes" rows="3"></textarea>
+                </div>
+                <button type="submit">Add Activity</button>
+            </form>
+        </section>
+        <section id="daily-schedule">
+            <h2>Today's Timeline</h2>
+            <div id="timeline-container">
+                <!-- Time slots and activity blocks will be generated here by JavaScript -->
+            </div>
+        </section>
+        <section id="weekly-goals">
+            <h2>Weekly Goals</h2>
+            <div id="weekly-goals-input">
+                <input type="text" id="weekly-goal-text" placeholder="Enter a new weekly goal">
+                <button id="add-weekly-goal-btn">Add Weekly Goal</button>
+            </div>
+            <ul id="weekly-goals-list">
+                <!-- Weekly goals will be displayed here -->
+            </ul>
+        </section>
+        <section id="monthly-goals">
+            <h2>Monthly Goals</h2>
+            <div id="monthly-goals-input">
+                <input type="text" id="monthly-goal-text" placeholder="Enter a new monthly goal">
+                <button id="add-monthly-goal-btn">Add Monthly Goal</button>
+            </div>
+            <ul id="monthly-goals-list">
+                <!-- Monthly goals will be displayed here -->
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Schedule Tracker</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>

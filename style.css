@@ -1,0 +1,481 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #1a1a2e;
+    /* Dark blue-purple background */
+    color: #e0e0e0;
+    /* Light grey text for general content */
+    line-height: 1.6;
+}
+
+header {
+    background-color: #162447;
+    /* Slightly lighter dark blue */
+    color: #e0f2f7;
+    /* Light cyan/blue text */
+    padding: 1.5em 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.2em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    /* Add some space below title */
+}
+
+/* User Personalization Styling in Header */
+#user-personalization {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    /* Space between elements */
+}
+
+#user-name-input {
+    padding: 8px 12px;
+    border: 1px solid #4a5c80;
+    border-radius: 4px;
+    background-color: #1e2d4b;
+    color: #e0e0e0;
+    font-size: 0.9em;
+}
+
+#user-name-input:focus {
+    outline: none;
+    border-color: #00bcd4;
+}
+
+#save-name-btn {
+    padding: 8px 15px;
+    background-color: #0097a7;
+    color: #e0f2f7;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+#save-name-btn:hover {
+    background-color: #00838f;
+}
+
+#welcome-message {
+    margin: 0;
+    font-size: 1em;
+    color: #9bf6ff;
+    /* Bright cyan for welcome message */
+}
+
+main {
+    padding: 20px;
+    max-width: 1200px;
+    /* Wider for better timeline view */
+    margin: 30px auto;
+    background-color: #1f2a40;
+    /* Darker shade for main content background */
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #283758;
+    /* Slightly lighter than main, for section distinction */
+    border: 1px solid #3a4c70;
+    border-radius: 6px;
+}
+
+section h2 {
+    color: #9bf6ff;
+    /* Bright cyan for headings */
+    border-bottom: 2px solid #4a5c80;
+    padding-bottom: 10px;
+    margin-top: 0;
+    font-size: 1.6em;
+}
+
+#quote-section {
+    background-color: #2a3b67;
+    border-left: 5px solid #00bcd4;
+    /* Cyan accent */
+    text-align: center;
+}
+
+#quote-section #quote-text {
+    font-size: 1.1em;
+    font-style: italic;
+    color: #c5cae9;
+    /* Lighter purple/blue for quote text */
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #162447;
+    /* Match header */
+    color: #a7d8de;
+    /* Lighter text for footer */
+    margin-top: 30px;
+    /* Ensure space from content */
+}
+
+/* Form Styling */
+#activity-form div {
+    margin-bottom: 15px;
+}
+
+#activity-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: #a7d8de;
+    /* Light blue for labels */
+}
+
+#activity-form input[type="text"],
+#activity-form input[type="time"],
+#activity-form textarea {
+    width: calc(100% - 24px);
+    padding: 12px;
+    border: 1px solid #4a5c80;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #1e2d4b;
+    color: #e0e0e0;
+}
+
+#activity-form input[type="text"]:focus,
+#activity-form input[type="time"]:focus,
+#activity-form textarea:focus {
+    outline: none;
+    border-color: #00bcd4;
+    /* Cyan highlight on focus */
+    box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+}
+
+#activity-form textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+#activity-form button[type="submit"] {
+    background-color: #00bcd4;
+    /* Primary action - Cyan */
+    color: #1a1a2e;
+    /* Dark text on light button */
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#activity-form button[type="submit"]:hover {
+    background-color: #00acc1;
+    /* Darker cyan on hover */
+}
+
+/* Activity List Styling */
+#daily-schedule ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+#daily-schedule li {
+    background-color: #f9f9f9;
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow items to wrap on smaller screens */
+    justify-content: space-between;
+    align-items: center;
+}
+
+#daily-schedule li.completed {
+    background-color: #e6ffe6;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+#daily-schedule li p {
+    margin: 5px 0 10px;
+    /* Add some space around notes */
+    flex-basis: 100%;
+    /* Make notes take full width */
+    color: #555;
+}
+
+#daily-schedule li strong {
+    font-size: 1.1em;
+}
+
+#daily-schedule .complete-btn,
+#daily-schedule .delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    font-size: 0.9em;
+    margin-left: 5px;
+    /* Space between buttons */
+}
+
+#daily-schedule .complete-btn {
+    background-color: #3498db;
+}
+
+#daily-schedule .complete-btn:hover {
+    background-color: #2980b9;
+}
+
+#daily-schedule .delete-btn {
+    background-color: #e74c3c;
+}
+
+#daily-schedule .delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Timeline Container Styling */
+#timeline-container {
+    border: 1px solid #3a4c70;
+    padding: 0;
+    position: relative;
+    background-color: #1e2d4b;
+    /* Dark background for timeline slots area */
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    overflow-x: auto;
+    border-radius: 4px;
+}
+
+.time-slot {
+    border-bottom: 1px dashed #3a4c70;
+    /* Dashed lines for slots */
+    padding: 10px 5px;
+    min-height: 60px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+}
+
+.time-slot:last-child {
+    border-bottom: none;
+}
+
+.time-label {
+    font-size: 0.8em;
+    color: #8c9eff;
+    /* Light indigo for time labels */
+    margin-right: 10px;
+    width: 70px;
+    /* Slightly wider label */
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.activity-block {
+    background-color: #ff7043;
+    /* Bright orange for activities - high contrast */
+    color: #1a1a2e;
+    /* Dark text on orange block */
+    border: 1px solid #f4511e;
+    /* Darker orange border */
+    border-radius: 4px;
+    padding: 8px 10px;
+    position: absolute;
+    left: 80px;
+    /* After time label (70px + 10px margin) */
+    right: 5px;
+    min-height: 30px;
+    box-sizing: border-box;
+    cursor: grab;
+    z-index: 10;
+    opacity: 0.95;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+}
+
+.activity-block.completed {
+    background-color: #4caf50;
+    /* Green for completed */
+    border-color: #388e3c;
+    color: #ffffff;
+    /* White text on green */
+    text-decoration: none;
+    /* Remove line-through for a cleaner look, bg color is enough */
+}
+
+.activity-block.completed .notes-preview {
+    color: #e8f5e9;
+    /* Lighter green for notes on completed */
+}
+
+.activity-block strong {
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.activity-block .notes-preview {
+    font-size: 0.85em;
+    margin-bottom: 6px;
+    color: #1a1a2e;
+    /* Ensure notes text is also dark on orange */
+}
+
+.activity-block .activity-actions button {
+    background: rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+    /* White text for buttons on activity block */
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 4px 8px;
+    font-size: 0.85em;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.activity-block .activity-actions button:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.activity-block.completed .activity-actions button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Remove old list styling if any conflicting */
+#daily-schedule ul,
+#daily-schedule li {
+    /* These might conflict, ensure they are overridden or removed if not used elsewhere */
+    /* For now, we will assume they are fine as timeline is in a div */
+}
+
+/* Goal Sections Styling */
+#weekly-goals,
+#monthly-goals {
+    background-color: #283758;
+    /* Consistent section background */
+}
+
+#weekly-goals-input,
+#monthly-goals-input {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+#weekly-goals-input input[type="text"],
+#monthly-goals-input input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #4a5c80;
+    border-radius: 4px;
+    margin-right: 10px;
+    background-color: #1e2d4b;
+    color: #e0e0e0;
+}
+
+#weekly-goals-input input[type="text"]:focus,
+#monthly-goals-input input[type="text"]:focus {
+    outline: none;
+    border-color: #00bcd4;
+    box-shadow: 0 0 5px rgba(0, 188, 212, 0.5);
+}
+
+#weekly-goals-input button,
+#monthly-goals-input button {
+    padding: 10px 15px;
+    background-color: #0097a7;
+    /* Slightly darker cyan for these buttons */
+    color: #e0f2f7;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#weekly-goals-input button:hover,
+#monthly-goals-input button:hover {
+    background-color: #00838f;
+}
+
+#weekly-goals-list,
+#monthly-goals-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#weekly-goals-list li,
+#monthly-goals-list li {
+    background-color: #1e2d4b;
+    /* Darker items on section background */
+    border: 1px solid #3a4c70;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #c5cae9;
+    transition: background-color 0.2s ease;
+}
+
+#weekly-goals-list li:hover,
+#monthly-goals-list li:hover {
+    background-color: #2a3b67;
+}
+
+#weekly-goals-list .delete-goal-btn,
+#monthly-goals-list .delete-goal-btn {
+    background-color: #c62828;
+    /* Red for delete */
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+#weekly-goals-list .delete-goal-btn:hover,
+#monthly-goals-list .delete-goal-btn:hover {
+    background-color: #b71c1c;
+    /* Darker red */
+}
+
+/* Scrollbar styling (Optional, for modern look) - Webkit only */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2a40;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4a5c80;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5c6e91;
+}
