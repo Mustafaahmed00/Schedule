@@ -1,6 +1,6 @@
 # Schedule Tracker
 
-A web-based schedule tracker application designed to help users manage their daily activities on an interactive timeline, set and track weekly and monthly goals, and stay motivated with dynamic quotes.
+A web-based schedule tracker application designed to help users manage their daily activities on an interactive timeline, set and track weekly and monthly goals, and stay motivated with dynamic quotes. Live Link: https://mustafaahmed00.github.io/Schedule/
 
 ## Features
 
